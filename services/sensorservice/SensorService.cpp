@@ -727,10 +727,9 @@ Vector<Sensor> SensorService::getSensorList(const String16& opPackageName)
         if (canAccessSensor(sensor, "getSensorList", opPackageName)) {
             accessibleSensorList.add(sensor);
         } else {
-            ALOGI("Skipped sensor %s because it requires permission %s and app op %d",
+            ALOGI("Skipped sensor %s because it requires permission %s",
                   sensor.getName().string(),
-                  sensor.getRequiredPermission().string(),
-                  sensor.getRequiredAppOp());
+                  sensor.getRequiredPermission().string());
         }
     }
     return accessibleSensorList;
@@ -1100,12 +1099,12 @@ bool SensorService::canAccessSensor(const Sensor& sensor, const char* operation,
     bool hasPermission = false;
 
     // Runtime permissions can't use the cache as they may change.
-    if (sensor.isRequiredPermissionRuntime()) {
+    /**if (sensor.isRequiredPermissionRuntime()) {
         hasPermission = checkPermission(String16(requiredPermission),
                 IPCThreadState::self()->getCallingPid(), IPCThreadState::self()->getCallingUid());
-    } else {
+    } else {*/
         hasPermission = PermissionCache::checkCallingPermission(String16(requiredPermission));
-    }
+    //}
 
     if (!hasPermission) {
         ALOGE("%s a sensor (%s) without holding its required permission: %s",
@@ -1113,7 +1112,7 @@ bool SensorService::canAccessSensor(const Sensor& sensor, const char* operation,
         return false;
     }
 
-    const int32_t opCode = sensor.getRequiredAppOp();
+    /**const int32_t opCode = sensor.getRequiredAppOp();
     if (opCode >= 0) {
         AppOpsManager appOps;
         if (appOps.noteOp(opCode, IPCThreadState::self()->getCallingUid(), opPackageName)
@@ -1122,7 +1121,7 @@ bool SensorService::canAccessSensor(const Sensor& sensor, const char* operation,
                     operation, sensor.getName().string(), opCode);
             return false;
         }
-    }
+    }*/
 
     return true;
 }
