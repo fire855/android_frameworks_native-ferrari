@@ -209,9 +209,11 @@ Sensor::Sensor(struct sensor_t const* hwSensor, int halVersion)
         if (halVersion > SENSORS_DEVICE_API_VERSION_1_0 && hwSensor->stringType) {
             mStringType = hwSensor->stringType;
         }
+#ifndef NO_SENSOR_PERMISSION_CHECK
         if (halVersion > SENSORS_DEVICE_API_VERSION_1_0 && hwSensor->requiredPermission) {
             mRequiredPermission = hwSensor->requiredPermission;
         }
+#endif
 
         if (halVersion >= SENSORS_DEVICE_API_VERSION_1_3) {
             mFlags = static_cast<int32_t>(hwSensor->flags);
